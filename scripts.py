@@ -57,14 +57,14 @@ def create_commendation(schoolkid, subject):
     commendation = random.choice(commendations)
     lesson = lessons.first()
     current_commendation = Commendation.objects.filter(created=lesson.date, schoolkid=schoolkid)
-    # if len(current_commendation) < 1:
-    Commendation.objects.create(
-        text=commendation,
-        created=lesson.date,
-        schoolkid=schoolkid,
-        subject=lesson.subject,
-        teacher=lesson.teacher
-    )
+    if len(current_commendation) < 1:
+        Commendation.objects.create(
+            text=commendation,
+            created=lesson.date,
+            schoolkid=schoolkid,
+            subject=lesson.subject,
+            teacher=lesson.teacher
+        )
 
 
 def main():
