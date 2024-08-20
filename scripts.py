@@ -1,18 +1,15 @@
 import random
-from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from datacenter.models import Mark, Chastisement, Commendation, Lesson, Subject, Schoolkid
 
 
 def fix_marks(schoolkid):
     marks = Mark.objects.filter(schoolkid=schoolkid, points__in=[1, 2, 3])
-    for mark in marks:
-        mark.points = 5
-        mark.save()
+    marks.update(points=5)
 
 
 def remove_chastisements(schoolkid):
-    chastisement = Chastisement.objects.filter(schoolkid=schoolkid)
-    chastisement.delete()
+    chastisements = Chastisement.objects.filter(schoolkid=schoolkid)
+    chastisements.delete()
 
 
 def create_commendation(schoolkid, subject):
@@ -48,9 +45,9 @@ def create_commendation(schoolkid, subject):
         "Ты многое сделал, я это вижу!",
         "Теперь у тебя точно все получится!"
     ]
-    math_subjects = Subject.objects.filter(title=subject)
+    school_subject = Subject.objects.filter(title=subject)
     lessons = Lesson.objects.filter(
-        subject__in=math_subjects,
+        subject__in=school_subject,
         year_of_study=schoolkid.year_of_study,
         group_letter=schoolkid.group_letter
     ).order_by('-date')
@@ -67,14 +64,20 @@ def create_commendation(schoolkid, subject):
         )
 
 
-def main():
+def get_schoolkid(full_name):
     try:
-        schoolkid = Schoolkid.objects.get(full_name__contains='Фролов Иван Григорьевич')
-    except ObjectDoesNotExist:
+        schoolkid = Schoolkid.objects.get(full_name__contains=full_name)
+        return schoolkid
+    except schoolkid.DoesNotExist:
         print(f"Ученик {schoolkid} не найден в базе данных")
-    except MultipleObjectsReturned:
+    except schoolkid.MultipleObjectsReturned:
         print(f"Найдено несколько учеников {schoolkid}")
-    subject = "Технология"
+
+
+def main():
+    full_name = 'Фролов Иван Григорьевич'
+    subject = "Музыка"
+    schoolkid = get_Schoolkid(full_name)
     fix_marks(schoolkid)
     remove_chastisements(schoolkid)
     create_commendation(schoolkid, subject)
