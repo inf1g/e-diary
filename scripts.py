@@ -77,7 +77,7 @@ def get_schoolkid(full_name):
 def main():
     full_name = 'Фролов Иван Григорьевич'
     subject = "Музыка"
-    schoolkid = get_Schoolkid(full_name)
+    schoolkid = get_schoolkid(full_name)
     fix_marks(schoolkid)
     remove_chastisements(schoolkid)
     create_commendation(schoolkid, subject)
